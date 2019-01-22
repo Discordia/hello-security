@@ -1,0 +1,9 @@
+---
+micronaut:
+    application:
+        name: hello-security
+
+---
+micronaut:
+  security:
+    enabled: true

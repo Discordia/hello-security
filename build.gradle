@@ -1,0 +1,69 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "com.github.johnrengelman.shadow" version "4.0.2"
+    id "net.ltgt.apt-eclipse" version "0.18"
+    id "net.ltgt.apt-idea" version "0.18"
+    id "org.hidetake.swagger.generator" version "2.16.0"
+}
+
+apply plugin:"application"
+apply plugin:"java"
+apply plugin: 'org.hidetake.swagger.generator'
+apply plugin: 'base'
+
+version "0.1"
+group "hello.security"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'io.micronaut:micronaut-bom:1.0.3'
+    }
+}
+
+dependencies {
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+    annotationProcessor "io.micronaut:micronaut-validation"
+    annotationProcessor "io.micronaut.configuration:micronaut-openapi"
+    compile "io.micronaut:micronaut-security-jwt"
+    compile "io.micronaut:micronaut-http-client"
+    compile "io.micronaut:micronaut-http-server-netty"
+    compile "io.micronaut:micronaut-inject"
+    compile "io.micronaut:micronaut-validation"
+    compile "io.micronaut:micronaut-runtime"
+    compile "io.micronaut.configuration:micronaut-openapi"
+    compileOnly "io.micronaut:micronaut-inject-java"
+    runtime "ch.qos.logback:logback-classic:1.2.3"
+    testCompile "junit:junit:4.12"
+    testCompile "io.micronaut:micronaut-inject-java"
+    testCompile "org.hamcrest:hamcrest-all:1.3"
+    swaggerUI 'org.webjars:swagger-ui:3.10.0'
+    swaggerCodegen 'io.swagger.codegen.v3:swagger-codegen-cli:3.0.0'
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
+
+mainClassName = "hello.security.Application"
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+    options.compilerArgs.add('-parameters')
+}
+
+swaggerSources {
+    api {
+        inputFile = file("$buildDir/classes/java/main/META-INF/swagger/hello-security-api-1.0.yml")
+        code {
+            language = 'html2'
+        }
+    }
+}
+build.dependsOn generateSwaggerUI
