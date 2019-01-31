@@ -8,37 +8,24 @@ servers:
 tags:
 - name: /hello
 paths:
-  /authenticated:
+  /hello/authenticated/{helloId}:
     post:
       tags:
       - /hello
       operationId: authenticated
-      parameters: []
+      parameters:
+      - name: helloId
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
-              properties:
-                authentication:
-                  $ref: '#/components/schemas/Authentication'
-                gameReference:
-                  $ref: '#/components/schemas/GameReference'
         required: true
       responses:
         default:
           content:
-            text/plain:
-              schema:
-                type: string
-components:
-  schemas:
-    Authentication:
-      type: object
-    GameReference:
-      type: object
-      properties:
-        referenceId:
-          type: string
-        name:
-          type: string
+            application/json: {}
