@@ -8,17 +8,12 @@ servers:
 tags:
 - name: /hello
 paths:
-  /hello/authenticated/{helloId}:
+  /hello/authenticated:
     post:
       tags:
       - /hello
       operationId: authenticated
-      parameters:
-      - name: helloId
-        in: path
-        required: true
-        schema:
-          type: string
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -28,4 +23,17 @@ paths:
       responses:
         default:
           content:
-            application/json: {}
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HelloResponse'
+components:
+  schemas:
+    HelloResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        properties:
+          $ref: '#/components/schemas/Map<String,String>'
+    Map<String,String>:
+      type: object
